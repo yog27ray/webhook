@@ -33,7 +33,7 @@ app.post('/:id', function (req, res) {
       if (item.match) {
         if (match.check(req.body, item.match)) {
           exec = ['sh', '-c', item['execute-command']]
-          cp = spawn(exec.shift(), exec, {env: process.env})
+          cp = spawn(exec.shift(), exec, {})
           cp.stdout.pipe(process.stdout);
           cp.on('error', function (err) {
             return eventsDebug('Error executing command [%s]: %s', rule.exec, err.message)
