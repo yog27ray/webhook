@@ -1,0 +1,21 @@
+{
+  "port": 9999,
+  "rules": [
+    {
+      "id": "test",
+      "execute-command": "/Users/yogendrasingh/WebstormProjects/webhook/test.sh",
+      "response": "my success",
+      "match": {
+        "push" : {
+          "changes": [
+            {
+              "new": {
+                "name" : "staging"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}
