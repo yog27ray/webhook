@@ -1,4 +1,4 @@
-spawn  = require('child_process').spawn;
+spawn = require('child_process').spawn;
 var fs = require('fs');
 var express = require('express');
 var bodyParser = require('body-parser');
@@ -8,7 +8,7 @@ var app = express();
 var config;
 
 app.use(bodyParser.json()); // for parsing application/json
-app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({extended: true})); // for parsing application/x-www-form-urlencoded
 
 if (process.argv.indexOf('-config') !== -1) {
   try {
@@ -26,32 +26,28 @@ if (!config) {
 
 var port = config.port || 3000;
 app.post('/:id', function (req, res) {
-    var hookFound = false;
-    config.rules.forEach(function (item) {
-        if (item.id === req.params.id) {
-            hookFound = true;
-            if (item.match) {
-                if (match.check(req.body, item.match)) {
-                  exec = [ 'sh', '-c', item['execute-command'] ]
-                  cp = spawn(exec.shift(), exec, { env: process.env })
-
-                  cp.on('error', function (err) {
-                    return eventsDebug('Error executing command [%s]: %s', rule.exec, err.message)
-                  })
-
-                  cp.on('close', function (code) {
-
-                  });
-                  return res.json(item.response || "success");
-                }
-                return res.json('Condition does not match.');
-            }
-            return res.json(item.response || "success");
+  var hookFound = false;
+  config.rules.forEach(function (item) {
+    if (item.id === req.params.id) {
+      hookFound = true;
+      if (item.match) {
+        if (match.check(req.body, item.match)) {
+          exec = ['sh', '-c', item['execute-command']]
+          cp = spawn(exec.shift(), exec, {env: process.env})
+          cp.stdout.pipe(process.stdout);
+          cp.on('error', function (err) {
+            return eventsDebug('Error executing command [%s]: %s', rule.exec, err.message)
+          });
+          return res.json(item.response || "success");
         }
-    });
-    if (!hookFound) return res.send('No hook found')
+        return res.json('Condition does not match.');
+      }
+      return res.json(item.response || "success");
+    }
+  });
+  if (!hookFound) return res.send('No hook found')
 })
 
 app.listen(port, function () {
-    console.log('Example app listening on port ' + port + '!')
+  console.log('Example app listening on port ' + port + '!')
 })
