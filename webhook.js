@@ -28,6 +28,7 @@ const port = config.port || 3000;
 app.post('/:id', function (req, res) {
   let hookFound = false;
   config.rules.forEach(function (item) {
+    if (hookFound) return;
     if (item.id === req.params.id) {
       hookFound = true;
       if (item.match) {
