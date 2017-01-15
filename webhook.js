@@ -1,11 +1,11 @@
 spawn = require('child_process').spawn;
-var fs = require('fs');
-var express = require('express');
-var bodyParser = require('body-parser');
-var match = require('./match');
+const fs = require('fs');
+const express = require('express');
+const bodyParser = require('body-parser');
+const match = require('./match');
 
-var app = express();
-var config;
+const app = express();
+let config;
 
 app.use(bodyParser.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({extended: true})); // for parsing application/x-www-form-urlencoded
@@ -24,9 +24,9 @@ if (!config) {
   return;
 }
 
-var port = config.port || 3000;
+const port = config.port || 3000;
 app.post('/:id', function (req, res) {
-  var hookFound = false;
+  let hookFound = false;
   config.rules.forEach(function (item) {
     if (item.id === req.params.id) {
       hookFound = true;
@@ -35,8 +35,8 @@ app.post('/:id', function (req, res) {
           return res.json('Invalid secret key.')
         }
         if (match.check(req.body, item.match)) {
-          exec = ['sh', '-c', item['execute-command']]
-          cp = spawn(exec.shift(), exec, {})
+          exec = ['sh', '-c', item['execute-command']];
+          cp = spawn(exec.shift(), exec, {});
           cp.stdout.pipe(process.stdout);
           cp.on('error', function (err) {
             return eventsDebug('Error executing command [%s]: %s', rule.exec, err.message)
@@ -49,8 +49,8 @@ app.post('/:id', function (req, res) {
     }
   });
   if (!hookFound) return res.send('No hook found')
-})
+});
 
 app.listen(port, function () {
   console.log('Example app listening on port ' + port + '!')
-})
+});
