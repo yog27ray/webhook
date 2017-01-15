@@ -3,6 +3,7 @@
   "rules": [
     {
       "id": "test",
+      "secret": "myname",
       "execute-command": "/Users/yogendrasingh/WebstormProjects/webhook/test.sh",
       "response": "my success",
       "match": {

@@ -31,6 +31,9 @@ app.post('/:id', function (req, res) {
     if (item.id === req.params.id) {
       hookFound = true;
       if (item.match) {
+        if (item.secret && item.secret !== req.query.secret) {
+          return res.json('Invalid secret key.')
+        }
         if (match.check(req.body, item.match)) {
           exec = ['sh', '-c', item['execute-command']]
           cp = spawn(exec.shift(), exec, {})
