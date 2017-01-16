@@ -29,7 +29,7 @@ function executeCommand(command) {
     console.log('No command found');
     return;
   }
-  exec = ['sh', '-c', item['execute-command']];
+  exec = ['sh', '-c', command];
   cp = spawn(exec.shift(), exec, {});
   cp.stdout.pipe(process.stdout);
   cp.on('error', function (err) {
@@ -39,7 +39,7 @@ function executeCommand(command) {
 
 const port = config.port || 3000;
 app.post('/:id', function (req, res) {
-  let response = 'No hook found with id' + req.params.id;
+  let response = 'No hook found with id ' + req.params.id;
   const hookFound = config.rules.some(function (item) {
     if (item.id === req.params.id) {
       console.log("Hook " + item.id + " found.");
