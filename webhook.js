@@ -24,9 +24,22 @@ if (!config) {
   return;
 }
 
+function executeCommand(command) {
+  if (!command) {
+    console.log('No command found');
+    return;
+  }
+  exec = ['sh', '-c', item['execute-command']];
+  cp = spawn(exec.shift(), exec, {});
+  cp.stdout.pipe(process.stdout);
+  cp.on('error', function (err) {
+    return eventsDebug('Error executing command [%s]: %s', rule.exec, err.message)
+  });
+}
+
 const port = config.port || 3000;
 app.post('/:id', function (req, res) {
-  let response = 'No hook found';
+  let response = 'No hook found with id' + req.params.id;
   const hookFound = config.rules.some(function (item) {
     if (item.id === req.params.id) {
       console.log("Hook " + item.id + " found.");
@@ -36,22 +49,21 @@ app.post('/:id', function (req, res) {
           return false;
         }
         if (match.check(req.body, item.match)) {
-          exec = ['sh', '-c', item['execute-command']];
-          cp = spawn(exec.shift(), exec, {});
-          cp.stdout.pipe(process.stdout);
-          cp.on('error', function (err) {
-            return eventsDebug('Error executing command [%s]: %s', rule.exec, err.message)
-          });
+          console.log("Executing webhook " + req.params.id);
+          executeCommand(item['execute-command']);
           res.json(item.response || "success");
           return true;
         }
         response = 'Condition does not match.';
         return false;
       }
+      console.log("Executing webhook " + req.params.id);
+      executeCommand(item['execute-command']);
       res.json(item.response || "success");
       return true;
     }
   });
+  console.log(response);
   if (!hookFound) return res.send(response)
 });
 
