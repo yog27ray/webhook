@@ -26,14 +26,14 @@ if (!config) {
 
 const port = config.port || 3000;
 app.post('/:id', function (req, res) {
-  let hookFound = false;
-  config.rules.forEach(function (item) {
-    if (hookFound) return;
+  let response = 'No hook found';
+  const hookFound = config.rules.some(function (item) {
     if (item.id === req.params.id) {
-      hookFound = true;
+      console.log("Hook " + item.id + " found.");
       if (item.match) {
         if (item.secret && item.secret !== req.query.secret) {
-          return res.json('Invalid secret key.')
+          response = 'Invalid secret key.';
+          return false;
         }
         if (match.check(req.body, item.match)) {
           exec = ['sh', '-c', item['execute-command']];
@@ -42,14 +42,17 @@ app.post('/:id', function (req, res) {
           cp.on('error', function (err) {
             return eventsDebug('Error executing command [%s]: %s', rule.exec, err.message)
           });
-          return res.json(item.response || "success");
+          res.json(item.response || "success");
+          return true;
         }
-        return res.json('Condition does not match.');
+        response = 'Condition does not match.';
+        return false;
       }
-      return res.json(item.response || "success");
+      res.json(item.response || "success");
+      return true;
     }
   });
-  if (!hookFound) return res.send('No hook found')
+  if (!hookFound) return res.send(response)
 });
 
 app.listen(port, function () {
