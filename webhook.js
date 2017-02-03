@@ -51,6 +51,7 @@ app.post('/:id', function (req, res) {
         if (match.check(req.body, item.match)) {
           console.log("Executing webhook " + req.params.id);
           executeCommand(item['execute-command']);
+          response = 'Webhook found.';
           res.json(item.response || "success");
           return true;
         }

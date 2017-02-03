@@ -2,16 +2,16 @@
   "port": 9999,
   "rules": [
     {
-      "id": "test",
-      "secret": "myname",
-      "execute-command": "/Users/yogendrasingh/WebstormProjects/webhook/test.sh",
+      "id": "build",
+      "secret": "eW9nZW5kcmFfc2luZ2g=",
+      "execute-command": "/home/prolanceer/projects/www/webhooks/app.prodeers.build.sh",
       "response": "my success",
       "match": {
-        "push" : {
+        "push": {
           "changes": [
             {
               "new": {
-                "name" : "staging"
+                "name": "staging"
               }
             }
           ]
