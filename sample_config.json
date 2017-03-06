@@ -4,7 +4,7 @@
     {
       "id": "build",
       "secret": "eW9nZW5kcmFfc2luZ2g=",
-      "execute-command": "/home/prolanceer/projects/www/webhooks/app.prodeers.build.sh",
+      "execute-command": "path-to.sh",
       "response": "my success",
       "match": {
         "push": {
